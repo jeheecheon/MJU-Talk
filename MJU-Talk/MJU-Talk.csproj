@@ -7,4 +7,9 @@
     <RootNamespace>MJU_Talk</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MJU-Talk.BLL\MJU-Talk.BLL.csproj" />
+    <ProjectReference Include="..\MJU-Talk.DAL\MJU-Talk.DAL.csproj" />
+  </ItemGroup>
+
 </Project>
