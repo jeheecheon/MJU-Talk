@@ -10,10 +10,13 @@
   <ItemGroup>
     <ProjectReference Include="..\MJU-Talk.BLL\MJU-Talk.BLL.csproj" />
     <ProjectReference Include="..\MJU-Talk.DAL\MJU-Talk.DAL.csproj" />
+    <ProjectReference Include="..\MJU-Talk.BlazorWASM\MJU-Talk.BlazorWASM.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
