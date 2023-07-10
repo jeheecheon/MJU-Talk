@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MJUTalk.DAL.Migrations
 {
     [DbContext(typeof(StudentDbContext))]
-    [Migration("20230703124109_InitialIdentity")]
-    partial class InitialIdentity
+    [Migration("20230708032722_Identity Initial")]
+    partial class IdentityInitial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

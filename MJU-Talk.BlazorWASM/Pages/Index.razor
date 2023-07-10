@@ -38,6 +38,7 @@
     {
         hubConnection = new HubConnectionBuilder()
         .WithUrl(Navigation.ToAbsoluteUri("/Chat"))
+        .WithAutomaticReconnect()
         .Build();
 
         hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
@@ -45,6 +46,12 @@
             var encodedMsg = $"{user}: {message}";
             messages.Add(encodedMsg);
             InvokeAsync(StateHasChanged);
+        });
+        hubConnection.On("GetMessage", async () =>
+        {
+            Console.WriteLine("Enter message:");
+            var message = await Console.In.ReadLineAsync();
+            return message;
         });
 
         await hubConnection.StartAsync();
