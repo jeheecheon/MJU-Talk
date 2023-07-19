@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MJU_Talk.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.OpenApi.Models;
 
 using MJU_Talk.DAL.Data;
 using MJU_Talk.DAL.Models;
@@ -19,6 +20,16 @@ builder.Services.AddResponseCompression(opts =>
 {
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
           new[] { "application/octet-stream" });
+});
+
+builder.Services.AddHsts(opts =>
+{
+    opts.MaxAge = TimeSpan.FromDays(1);
+    opts.IncludeSubDomains = true;
+});
+
+builder.Services.AddSwaggerGen(c => {
+ c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApp", Version = "v1" });
 });
 
 builder.Services.AddDbContext<StudentDbContext>(opts =>
@@ -63,12 +74,6 @@ builder.Services.ConfigureApplicationCookie(opts =>
     opts.SlidingExpiration = true;
 });
 
-builder.Services.AddHsts(opts =>
-{
-    opts.MaxAge = TimeSpan.FromDays(1);
-    opts.IncludeSubDomains = true;
-});
-
 var app = builder.Build();
 
 if (app.Environment.IsProduction())
@@ -91,5 +96,10 @@ app.MapRazorPages();
 app.UseBlazorFrameworkFiles("/webassembly");
 app.MapFallbackToFile("/webassembly/{*path:nonfile}", "/webassembly/index.html");
 app.MapHub<ChatHub>("/Chat");
+
+app.UseSwagger();
+app.UseSwaggerUI(options => {
+ options.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApp");
+});
 
 app.Run();
