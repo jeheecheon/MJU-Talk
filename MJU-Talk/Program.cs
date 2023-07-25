@@ -7,9 +7,13 @@ using Microsoft.OpenApi.Models;
 
 using MJU_Talk.DAL.Data;
 using MJU_Talk.DAL.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Swashbuckle.AspNetCore.Filters;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using MJU_Talk;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("StudentDbContextConnection") ?? throw new InvalidOperationException("Connection string 'StudentDbContextConnection' not found.");
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -28,8 +32,35 @@ builder.Services.AddHsts(opts =>
     opts.IncludeSubDomains = true;
 });
 
-builder.Services.AddSwaggerGen(c => {
- c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApp", Version = "v1" });
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApp", Version = "v1" });
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
+
+builder.Services.AddAuthentication(opts => {
+    opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        ValidateLifetime = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            builder.Configuration["AppSettings:Token"]!))
+    };
 });
 
 builder.Services.AddDbContext<StudentDbContext>(opts =>
@@ -41,7 +72,7 @@ builder.Services.AddDbContext<StudentDbContext>(opts =>
 
 builder.Services.AddDefaultIdentity<StudentUser>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedAccount = false;
 }).AddEntityFrameworkStores<StudentDbContext>();
 
 builder.Services.Configure<IdentityOptions>(opts =>
@@ -74,6 +105,8 @@ builder.Services.ConfigureApplicationCookie(opts =>
     opts.SlidingExpiration = true;
 });
 
+
+
 var app = builder.Build();
 
 if (app.Environment.IsProduction())
@@ -97,9 +130,13 @@ app.UseBlazorFrameworkFiles("/webassembly");
 app.MapFallbackToFile("/webassembly/{*path:nonfile}", "/webassembly/index.html");
 app.MapHub<ChatHub>("/Chat");
 
-app.UseSwagger();
-app.UseSwaggerUI(options => {
- options.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApp");
-});
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "MJU-Talk");
+    });
+}
 
 app.Run();

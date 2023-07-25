@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "http": {
+    "MJU_Talk": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

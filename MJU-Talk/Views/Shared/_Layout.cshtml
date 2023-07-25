@@ -1,23 +1,17 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Identity</title>
     <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="m-2">
-        <h5 class="bg-info text-white text-center p-2">User Administration</h5>
-        <partial name="_LoginPartial" />
+      <h5 class="bg-info text-white text-center p-2">User Administration</h5>
         @RenderBody()
     </div>
-
-    @RenderSection("Scripts", required: false)
-</body>
-
+  </body>
 </html>

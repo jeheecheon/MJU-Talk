@@ -1,6 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MJU_Talk;
+namespace MJU_Talk.Controllers;
 
 public class HomeController : Controller
 {
